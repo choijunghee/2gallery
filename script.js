@@ -1,7 +1,6 @@
-const totalPages = 37; // 🔥 페이지 수정
-
+const totalPages = 37;
 const flipbook = $("#flipbook");
-let zoomLevel = 1;
+const sound = document.getElementById("pageSound");
 
 // 📄 페이지 생성
 for (let i = 1; i <= totalPages; i++) {
@@ -10,7 +9,7 @@ for (let i = 1; i <= totalPages; i++) {
   `);
 }
 
-// 👉 홀수 페이지면 마지막 빈 페이지 추가 (책 균형)
+// 홀수 페이지 보정
 if (totalPages % 2 !== 0) {
   flipbook.append(`<div></div>`);
 }
@@ -38,7 +37,15 @@ function initFlipbook() {
     display: isMobile() ? "single" : "double",
     duration: 800,
     gradients: true,
-    elevation: 50
+    elevation: 50,
+
+    // 🔥 페이지 넘길 때 소리
+    when: {
+      turning: function () {
+        sound.currentTime = 0;
+        sound.play();
+      }
+    }
   });
 }
 
@@ -55,28 +62,20 @@ $(document).ready(function () {
   initFlipbook();
 });
 
-// 🔄 반응형 대응
-window.addEventListener("resize", function () {
-  reloadFlipbook();
-});
+// 반응형
+window.addEventListener("resize", reloadFlipbook);
 
-// ▶ 다음
+// 버튼
 function nextPage() {
   flipbook.turn("next");
 }
 
-// ◀ 이전
 function prevPage() {
   flipbook.turn("previous");
 }
 
-/////////////////////////////////////////////////////
-// 🖱 마우스 휠 페이지 넘김
-/////////////////////////////////////////////////////
+// 🖱 마우스 휠
 window.addEventListener("wheel", function (e) {
-
-  if (zoomLevel > 1) return;
-
   if (e.deltaY > 0) {
     flipbook.turn("next");
   } else {
@@ -84,24 +83,11 @@ window.addEventListener("wheel", function (e) {
   }
 });
 
-/////////////////////////////////////////////////////
-// 🔍 더블클릭 확대
-/////////////////////////////////////////////////////
-document.getElementById("flipbook").addEventListener("dblclick", function () {
-
-  zoomLevel = (zoomLevel === 1) ? 2 : 1;
-
-  this.style.transform = `scale(${zoomLevel})`;
+// 🔥 드래그 지원 (핵심)
+$("#flipbook").on("mousedown touchstart", function () {
+  $(this).css("cursor", "grabbing");
 });
 
-/////////////////////////////////////////////////////
-// ⌨ 키보드 확대
-/////////////////////////////////////////////////////
-document.addEventListener("keydown", function (e) {
-
-  if (e.key === "+") zoomLevel += 0.2;
-  if (e.key === "-") zoomLevel = Math.max(1, zoomLevel - 0.2);
-
-  document.getElementById("flipbook").style.transform =
-    `scale(${zoomLevel})`;
+$("#flipbook").on("mouseup touchend", function () {
+  $(this).css("cursor", "grab");
 });

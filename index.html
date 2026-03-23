@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>심지회</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="style.css">
@@ -11,7 +10,7 @@
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Turn.js 안정 버전 -->
+  <!-- Turn.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 </head>
 
@@ -25,6 +24,9 @@
   <button class="nav prev" onclick="prevPage()">‹</button>
   <button class="nav next" onclick="nextPage()">›</button>
 </div>
+
+<!-- 페이지 넘김 소리 -->
+<audio id="pageSound" src="paper.mp3" preload="auto"></audio>
 
 <script src="script.js"></script>
 
