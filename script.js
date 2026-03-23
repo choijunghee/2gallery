@@ -2,8 +2,11 @@ const totalPages = 37;
 const flipbook = $("#flipbook");
 const sound = document.getElementById("pageSound");
 
-// 페이지 생성
+// 📄 페이지 생성 (중복 방지 포함)
 function createPages() {
+
+  flipbook.html(""); // 🔥 핵심 (중복 제거)
+
   for (let i = 1; i <= totalPages; i++) {
     flipbook.append(`<div><img src="./images/page${i}.jpg"></div>`);
   }
@@ -13,12 +16,12 @@ function createPages() {
   }
 }
 
-// 모바일 체크
+// 📱 모바일 체크
 function isMobile() {
   return window.innerWidth < 768;
 }
 
-// 초기화
+// 📖 flipbook 실행
 function initFlipbook() {
 
   const width = isMobile()
@@ -30,11 +33,15 @@ function initFlipbook() {
     : window.innerHeight * 0.9;
 
   flipbook.turn({
-    width,
-    height,
+    width: width,
+    height: height,
     autoCenter: true,
     display: isMobile() ? "single" : "double",
+    duration: 800,
+    gradients: true,
+    elevation: 50,
 
+    // 🔊 소리
     when: {
       turning: function () {
         if (sound) {
@@ -46,22 +53,31 @@ function initFlipbook() {
   });
 }
 
-// 완전 안전 실행 (🔥 핵심)
+// 🚀 완전 안정 실행 (핵심)
 $(window).on("load", function () {
 
-  createPages();
+  createPages(); // 먼저 페이지 생성
 
   setTimeout(() => {
-    initFlipbook();
+    initFlipbook(); // 그 다음 실행
   }, 300);
 
 });
 
-// 버튼
+// ▶ 버튼
 function nextPage() {
-  $("#flipbook").turn("next");
+  flipbook.turn("next");
 }
 
 function prevPage() {
-  $("#flipbook").turn("previous");
+  flipbook.turn("previous");
 }
+
+// 🖱 마우스 휠
+window.addEventListener("wheel", function (e) {
+  if (e.deltaY > 0) {
+    flipbook.turn("next");
+  } else {
+    flipbook.turn("previous");
+  }
+});
