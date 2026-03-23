@@ -39,17 +39,19 @@ function initFlipbook() {
     gradients: true,
     elevation: 50,
 
-    // 🔥 페이지 넘길 때 소리
+    // 🔊 페이지 넘김 소리
     when: {
       turning: function () {
-        sound.currentTime = 0;
-        sound.play();
+        if (sound) {
+          sound.currentTime = 0;
+          sound.play().catch(() => {});
+        }
       }
     }
   });
 }
 
-// 🔄 재로드
+// 🔄 재초기화
 function reloadFlipbook() {
   if (flipbook.data("turn")) {
     flipbook.turn("destroy");
@@ -57,13 +59,20 @@ function reloadFlipbook() {
   initFlipbook();
 }
 
-// 🚀 실행
-$(document).ready(function () {
+// 🚀 핵심: 이미지까지 로딩 후 실행
+window.onload = function () {
   initFlipbook();
-});
 
-// 반응형
-window.addEventListener("resize", reloadFlipbook);
+  // 🔥 모바일 버그 방지
+  setTimeout(() => {
+    reloadFlipbook();
+  }, 500);
+};
+
+// 🔄 반응형 대응
+window.addEventListener("resize", function () {
+  reloadFlipbook();
+});
 
 // 버튼
 function nextPage() {
@@ -83,7 +92,7 @@ window.addEventListener("wheel", function (e) {
   }
 });
 
-// 🔥 드래그 지원 (핵심)
+// 🔥 드래그 UX 개선
 $("#flipbook").on("mousedown touchstart", function () {
   $(this).css("cursor", "grabbing");
 });
